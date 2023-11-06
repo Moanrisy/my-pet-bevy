@@ -16,15 +16,15 @@ fn main() {
                     primary_window: Some(Window {
                         mode: WindowMode::Windowed,
                         title: "I am a window!".into(),
-                        resolution: (48., 48.).into(),
+                        resolution: (55., 68.).into(),
                         position: WindowPosition::At(IVec2 { x: 0, y: 1080 }),
                         decorations: false,
                         present_mode: PresentMode::AutoVsync,
                         resize_constraints: WindowResizeConstraints {
-                            min_width: 48.,
-                            min_height: 48.,
-                            max_width: 48.,
-                            max_height: 48.,
+                            min_width: 55.,
+                            min_height: 68.,
+                            max_width: 55.,
+                            max_height: 68.,
                         },
                         transparent: true,
                         composite_alpha_mode: CompositeAlphaMode::Auto,
@@ -72,7 +72,7 @@ fn animate_sprite(
     for (indices, mut timer, mut sprite, mut _transform) in &mut query {
         timer.tick(time.delta());
         if timer.just_finished() {
-            let time_elapased = time.elapsed().as_secs_f32().round() * 10.0;
+            let time_elapased = time.elapsed().as_secs_f32().round() * 1.0;
             let mut move_x_pixel = time_elapased % 1920.0;
 
             let move_right_or_left = time_elapased as i32 / 1920;
@@ -84,6 +84,7 @@ fn animate_sprite(
             }
 
             window.position = WindowPosition::At(IVec2 {
+                // x: 200,
                 x: move_x_pixel as i32,
                 y: 1080,
             });
@@ -102,22 +103,25 @@ fn setup(
     asset_server: Res<AssetServer>,
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
 ) {
-    let texture_handle = asset_server.load("textures/rpg/chars/gabe/gabe-idle-run.png");
+    // let texture_handle = asset_server.load("textures/rpg/chars/gabe/gabe-idle-run.png");
+    let texture_handle = asset_server.load("megumin.png");
     let texture_atlas =
-        TextureAtlas::from_grid(texture_handle, Vec2::new(24.0, 24.0), 7, 1, None, None);
+        TextureAtlas::from_grid(texture_handle, Vec2::new(271.0, 340.0), 12, 1, None, None);
     let texture_atlas_handle = texture_atlases.add(texture_atlas);
     // Use only the subset of sprites in the sheet that make up the run animation
-    let animation_indices = AnimationIndices { first: 1, last: 6 };
+    let animation_indices = AnimationIndices { first: 0, last: 11 };
     commands.spawn(Camera2dBundle::default());
     commands.spawn((
         SpriteSheetBundle {
             texture_atlas: texture_atlas_handle,
             sprite: TextureAtlasSprite::new(animation_indices.first),
-            transform: Transform::from_scale(Vec3::splat(2.0)),
+            // transform: Transform::from_scale(Vec3::splat(2.0)),
+            transform: Transform::from_scale(Vec3::splat(0.2)),
             ..default()
         },
         animation_indices,
-        AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+        AnimationTimer(Timer::from_seconds(0.11, TimerMode::Repeating)),
+        // AnimationTimer(Timer::from_seconds(0.09, TimerMode::Repeating)),
     ));
 }
 
